@@ -18,11 +18,13 @@
         }
         body > header {
             width: 100%;
+            height: 100%;
             overflow: hidden;
             position: relative;
         }
         body > header > img {
             width: 100%;
+            height: 100%;
             filter: brightness(50%);
         }
         body > header > h1 {
@@ -35,7 +37,7 @@
         body > header > h1,
         body > header > h2 {
             position: absolute;
-            left: 100px;
+            left: 12.5%;
             color: #fff;
             text-shadow: 0 0 5px #000;
         }
@@ -46,7 +48,7 @@
             width: 75%;
             margin: auto;
             padding: 30px 50px;
-            top: 300px;
+            top: 260px;
             left: 12.5%;
             color: #fff;
         }
@@ -84,7 +86,7 @@
 
     <body>
         <header>
-            <img src="images/homebackground.jpg" />
+            <img src="/images/homebackground.jpg" />
             <h1>WebNomad</h1>
             <h2>Make the world your workplace.</h2>
             <section class="earlybird">
@@ -105,5 +107,15 @@
                     </form>
             </section>
         </header>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-59484449-1', 'auto');
+          ga('send', 'pageview');
+
+        </script>
     </body>
 </html>
