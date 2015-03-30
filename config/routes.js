@@ -32,7 +32,9 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  'GET /': 'DefaultController.home'
+  'GET /': 'DefaultController.home',
+
+  'GET /find': 'LocationController.home'
 
   /***************************************************************************
   *                                                                          *
