@@ -1,0 +1,10 @@
+<template name="earlybird">
+    <form method="post">
+        <input type="email" name="email" placeholder="Enter your email address" required>
+        {{#if confirmation}}
+        <input class="valid" type="submit" value="Thank you!" disabled>
+        {{else}}
+        <input type="submit" value="Let me know!">
+        {{/if}}
+    </form>
+</template>
