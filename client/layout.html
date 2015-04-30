@@ -1,97 +1,21 @@
 <head>
-    <meta charset="utf-8" />
-    <title>Make the world your workplace - Webnomad</title>
-    <meta name="description" content="Find a local place to work, get connected to other remote workers." />
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,900,900italic' rel='stylesheet' type='text/css' />
-    <style type="text/css" media="screen">
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: Roboto, Sans-Serif;
-        background-color: #f6f6f6;
-    }
-    * {
-        box-sizing: border-box;
-    }
-    body > header {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        position: relative;
-    }
-    body > header > img {
-        width: 100%;
-        height: 100%;
-        filter: brightness(50%);
-    }
-    body > header > h1 {
-        font-size: 5em;
-        top: 50px;
-    }
-    body > header > h2 {
-        top: 170px;
-    }
-    body > header > h1,
-    body > header > h2 {
-        position: absolute;
-        left: 12.5%;
-        color: #fff;
-        text-shadow: 0 0 5px #000;
-    }
+  <meta charset="utf-8" />
+  <title>Make the world your workplace - Webnomad</title>
+  <meta name="description" content="Find a local place to work, get connected to other remote workers." />
+  <link href='http://fonts.googleapis.com/css?family=Roboto:400,900,900italic' rel='stylesheet' type='text/css' />
+  <link rel="stylesheet" type="text/css" href="layout.css" />
 
-    .earlybird {
-        position: absolute;
-        background: rgba(0, 0, 0, .6);
-        width: 75%;
-        margin: auto;
-        padding: 30px 50px;
-        top: 260px;
-        left: 12.5%;
-        color: #fff;
-    }
-    .earlybird p {
-        font-size: 1.2em;
-    }
-
-    form {
-        padding: 0 !important;
-    }
-    form input[type=email] {
-        border: 1px solid #ccc;
-        width: 73%;
-        font-size: 1.2em;
-    }
-    form input[type=submit] {
-        border: 1px solid #ccc;
-        background-color: rgba(243, 174, 115, .85);
-        color: #fff;
-        text-transform: uppercase;
-        width: 25%;
-        margin-left: 1%;
-    }
-    form input[type=submit]:not(.valid):hover {
-        background-color: rgba(243, 174, 115, .93);
-    }
-    form input.valid {
-        background-color: #6B5;
-    }
-    form input {
-        font: inherit;
-        padding: 15px 30px;
-        height: 60px;
-        display: inline;
-    }
-    </style>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiKD-uSteYf-XzBi_bVQD5781YXOfnkSY"></script>
+  <script type="text/javascript" src="/js/gmaps.js"></script>
 </head>
 
 <body>
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-59484449-1', 'auto');
-      ga('send', 'pageview');
-    </script>
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-59484449-1', 'auto');
+    ga('send', 'pageview');
+  </script>
 </body>

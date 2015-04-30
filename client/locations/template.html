@@ -1,0 +1,11 @@
+<template name="locations">
+  <div class="map"></div>
+  <form method="post">
+    <input type="text" placeholder="Name of the place" name="name" />
+    <input type="number" min="0" max="5" placeholder="wifi quality" name="wifi" />
+    <label><input type="checkbox" name="power"> Power is avalaible</label>
+    <input type="hidden" placeholder="latitude" name="lat" />
+    <input type="hidden" placeholder="longitude" name="lng" />
+    <input type="submit" value="Add this place" name="add_new" />
+  </form>
+</template>

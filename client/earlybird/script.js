@@ -2,7 +2,7 @@
 Template.earlybird.events({
   'submit form': function(event) {
     event.preventDefault();
-    var emailTag = document.querySelector('[name=email]');
+    var emailTag = document.querySelector('#earlybird [name=email]');
 
     var inserted = Subscribers.insert({
       email: emailTag.value,
@@ -12,7 +12,7 @@ Template.earlybird.events({
     Session.set('confirmation', true);
   },
 
-  'focus input[type=email]': function(event) {
+  'focus #earlybird input[type=email]': function(event) {
     Session.set('confirmation', false);
   }
 });
