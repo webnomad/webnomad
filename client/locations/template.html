@@ -2,6 +2,12 @@
   <div class="map"></div>
   <form method="post">
     <input type="text" placeholder="Name of the place" name="name" />
+    <select name="type">
+      <option value="restaurant">Restaurant</option>
+      <option value="cafe">Coffeeshop/Tea-room</option>
+      <option value="coworking">Coworking space</option>
+      <option value="other">Museum/library/other</option>
+    </select>
     <input type="number" min="0" max="5" placeholder="wifi quality" name="wifi" />
     <label><input type="checkbox" name="power"> Power is avalaible</label>
     <input type="hidden" placeholder="latitude" name="lat" />

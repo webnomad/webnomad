@@ -39,8 +39,8 @@ Template.locations.rendered = function() {
     });
 
     navigator.geolocation.getCurrentPosition(function geolocationSucess(position) {
-      //var coords = {lat: position.coords.latitude, lng: position.coords.longitude};
-      var coords = {lat: Math.random()+41, lng: Math.random()+2};
+      var coords = {lat: position.coords.latitude, lng: position.coords.longitude};
+      //var coords = {lat: Math.random()+41, lng: Math.random()+2};
       document.querySelector('[name=lat]').value = coords.lat;
       document.querySelector('[name=lng]').value = coords.lng;
       map.setCenter(coords);
