@@ -1,0 +1,34 @@
+.earlybird {
+  position: absolute;
+  background: rgba(0, 0, 0, .6);
+  width: 75%;
+  margin: auto;
+  padding: 30px 50px;
+  top: 260px;
+  left: 12.5%;
+  color: #fff;
+}
+.earlybird p {
+  font-size: 1.2em;
+}
+.earlybird form input[type=email] {
+  border: 1px solid #ccc;
+  width: 73%;
+  font-size: 1.2em;
+}
+
+.earlybird form input[type=submit] {
+  border: 1px solid #ccc;
+  background-color: rgba(243, 174, 115, .85);
+  color: #fff;
+  text-transform: uppercase;
+  width: 25%;
+  margin-left: 1%;
+}
+
+.earlybird form input {
+  font: inherit;
+  padding: 15px 30px;
+  height: 60px;
+  display: inline;
+}

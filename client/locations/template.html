@@ -1,17 +1,35 @@
 <template name="locations">
   <div class="map"></div>
+
   <form method="post">
-    <input type="text" placeholder="Name of the place" name="name" />
-    <select name="type">
-      <option value="restaurant">Restaurant</option>
-      <option value="cafe">Coffeeshop/Tea-room</option>
-      <option value="coworking">Coworking space</option>
-      <option value="other">Museum/library/other</option>
-    </select>
-    <input type="number" min="0" max="5" placeholder="wifi quality" name="wifi" />
-    <label><input type="checkbox" name="power"> Power is avalaible</label>
-    <input type="hidden" placeholder="latitude" name="lat" />
-    <input type="hidden" placeholder="longitude" name="lng" />
-    <input type="submit" value="Add this place" name="add_new" />
+    <h2>Add a location</h2>
+    <ul>
+      <li>
+        <input type="text" placeholder="Name of the place" name="name" />
+      </li>
+      <li>
+        <select name="type">
+          <option value="restaurant">Restaurant</option>
+          <option value="cafe">Coffeeshop/Tea-room</option>
+          <option value="coworking">Coworking space</option>
+          <option value="other">Museum/library/other</option>
+        </select>
+      </li>
+      <li>
+        <input type="number" min="0" max="5" placeholder="wifi quality" name="wifi" />
+      </li>
+      <li>
+        <label><input type="checkbox" name="power"> Power is avalaible</label>
+      </li>
+      <li>
+        <input type="hidden" placeholder="latitude" name="lat" />
+      </li>
+      <li>
+        <input type="hidden" placeholder="longitude" name="lng" />
+      </li>
+      <li>
+        <input type="submit" value="Add this place" name="add_new" />
+      </li>
+    </ul>
   </form>
 </template>

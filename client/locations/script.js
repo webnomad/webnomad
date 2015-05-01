@@ -25,7 +25,7 @@ Template.locations.rendered = function() {
         lat: 38.5977691,
         lng: -90.2497072
       },
-      zoom: 8
+      zoom: 13
     };
     var map = new google.maps.Map(document.querySelector('.map'), mapOptions);
 

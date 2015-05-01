@@ -1,0 +1,34 @@
+form {
+  padding: 0;
+  margin: 1em;
+}
+form > ul {
+  padding: 0;
+}
+form > ul > li {
+  list-style: none;
+}
+
+input,
+select {
+  padding: .5em 1em;
+  border: 1px solid #ccc;
+  font: inherit;
+  width: 100%;
+  max-width: 500px;
+  margin: .5em 0;
+  border-radius: 5px;
+}
+
+input[type=checkbox] {
+  padding: 0;
+  width: inherit;
+}
+
+form input[type=submit]:not(.valid):hover {
+  background-color: rgba(243, 174, 115, .93);
+}
+form input.valid {
+  background-color: #6B5;
+}
+
