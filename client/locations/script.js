@@ -21,31 +21,37 @@ Template.locations.destroyed = function() {
     this.locationsObserver.stop();
 }
 
-Template.locations.rendered = function() {
-    var mapOptions = {
-      zoom: 13
-    };
-    var map = new google.maps.Map(document.querySelector('.map'), mapOptions);
+function loadMap(coords) {
+  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+      center: coords,
+      zoom: 14
+  });
 
-    this.locationsObserver = Locations.find().observe({
-      added: function(location) {
-        addMarker(location, map);
-      }
-    });
-    Locations.find().forEach(function(location) {
+  this.locationsObserver = Locations.find().observe({
+    added: function(location) {
       addMarker(location, map);
-    });
+    }
+  });
+  Locations.find().forEach(function(location) {
+    addMarker(location, map);
+  });
+}
 
-    navigator.geolocation.getCurrentPosition(function geolocateSuccess(position) {
+Template.locations.rendered = function() {
+  navigator.geolocation.getCurrentPosition(
+    function geolocateSuccess(position) {
       var coords = {lat: position.coords.latitude, lng: position.coords.longitude};
       //var coords = {lat: Math.random()+41, lng: Math.random()+2};
       document.querySelector('[name=lat]').value = coords.lat;
       document.querySelector('[name=lng]').value = coords.lng;
-      map.setCenter(coords);
+
+      console.info('You were geolocated at', coords);
+      loadMap(coords);
     },
     function geolocateError(err) {
       console.error(err);
-    });
+    }
+  );
 };
 
 Template.locations.events({
