@@ -2,27 +2,26 @@
     height: 100%;
 }
 
-paper-icon-button {
+a.location-add {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.location-add paper-icon-button {
   font-weight: bold;
   font-size: 1.3em;
 }
 
-paper-icon-button.add {
+.location-add paper-icon-button {
   position: absolute;
   bottom: 1%;
   right: 1%;
 }
-paper-icon-button.add #icon {
+.location-add paper-icon-button #icon {
   width: 60px;
   height: 60px;
 }
-paper-icon-button.add {
+.location-add paper-icon-button:not([pressed]) {
   background-color: rgba(250, 250, 250, .8);
-  border-radius: 60px;
-}
-paper-icon-button.add[pressed] {
-  background-color: transparent;
-}
-paper-icon-button.add::shadow #ripple {
-  color: #900;
+  border-radius: 100%;
 }
