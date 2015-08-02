@@ -1,4 +1,4 @@
-
+/*
 
 function addMarker(location, map) {
   var coordinates = location.coordinates;
@@ -36,20 +36,22 @@ function loadMap(coords) {
     addMarker(location, map);
   });
 }
+*/
 
 Template.locations.rendered = function() {
   navigator.geolocation.getCurrentPosition(
     function geolocateSuccess(position) {
       var coords = {lat: position.coords.latitude, lng: position.coords.longitude};
-      //var coords = {lat: Math.random()+41, lng: Math.random()+2};
-      document.querySelector('[name=lat]').value = coords.lat;
-      document.querySelector('[name=lng]').value = coords.lng;
-
       console.info('You were geolocated at', coords);
-      loadMap(coords);
+      // Fill the form
+      $('[name=lat]').val(coords.lat);
+      $('[name=lng]').val(coords.lng);
+      // Move the map
+      $('#mapcanvas').get(0).latitude = coords.lat;
+      $('#mapcanvas').get(0).longitude = coords.lng;
     },
     function geolocateError(err) {
-      console.error(err);
+      console.error("You were not geolocated", err);
     }
   );
 };

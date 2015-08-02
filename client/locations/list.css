@@ -1,0 +1,21 @@
+.locations google-map {
+    height: 100%;
+}
+
+paper-icon-button {
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+paper-icon-button.add {
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+}
+paper-icon-button.add #icon {
+  width: 100px;
+  height: 100px;
+}
+paper-icon-button.add::shadow #ripple {
+  color: #900;
+}

@@ -1,0 +1,27 @@
+{
+  "name": "WebNomad",
+  "version": "0.0.1",
+  "authors": [
+    "Vincent Agnano <vincent.agnano@scopyleft.fr>"
+  ],
+  "description": "Make the World your Workplace.",
+  "main": "app.js",
+  "moduleType": [
+    "es6",
+    "node"
+  ],
+  "license": "copyright",
+  "homepage": "http://webnomad.org",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1",
+    "google-map": "GoogleWebComponents/google-map#~1.0.3",
+    "paper-elements": "PolymerElements/paper-elements#1"
+  }
+}
