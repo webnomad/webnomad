@@ -3,3 +3,13 @@ paper-button[type=submit] {
   color: #4A5;
   border: 1px solid rgba(68, 170, 85, 0.3);
 }
+paper-button[type=cancel] {
+  background-color: #FEE;
+  color: #999;
+  border: 1px solid rgba(150, 150, 150, 0.3);
+}
+
+paper-button[type=submit],
+paper-button[type=cancel] {
+  display: inline-block;
+}

@@ -1,5 +1,4 @@
 Template.locationsAdd.rendered = function() {
-  console.log('locationAdd redered')
   geolocalize(function(coords) {
     // Fill the form
     $('[name=lat]').val(coords.latitude);
@@ -8,13 +7,16 @@ Template.locationsAdd.rendered = function() {
 };
 
 Template.locationsAdd.events({
+  'click [type=cancel]': function(event) {
+    Router.go('locations');
+  },
+
   'click [type=submit]': function(event) {
     $('form').submit();
   },
+
   'submit': function(event) {
     event.preventDefault();
-    console.log('test form');
-
     Locations.insert({
       name: $('[name=name]').val(),
       wifi: parseInt($('[name=wifi]').val(), 10),
