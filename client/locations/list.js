@@ -1,15 +1,15 @@
 Template.locations.helpers({
   locations: function () {
     var locations = Locations.find({});
-    console.log('locations', location);
+    console.log('locations', locations.fetch());
     return locations;
   },
 
-  locationToAttributes: function(location) {
-    var l = location.hash.location;
+  locationToAttributes: function(loc) {
+    var l = loc.hash.loc;
     return  {
-      latitude: l.lat.toString(),
-      longitude: l.lng.toString(),
+      latitude: l.coordinates.length && l.coordinates[0],
+      longitude: l.coordinates.length && l.coordinates[1],
       title: l.name
     };
   }

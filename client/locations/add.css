@@ -1,0 +1,5 @@
+paper-button[type=submit] {
+  background-color: #EFE;
+  color: #4A5;
+  border: 1px solid rgba(68, 170, 85, 0.3);
+}

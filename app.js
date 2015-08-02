@@ -8,7 +8,7 @@ Router.route('/locations', function () {
   this.name = 'locations'
 });
 
-Router.route('/locations/add', function () {
-  this.render('locations/add');
+Router.route('/locations/add', {name: 'locations.add'}, function () {
+  this.render('locationsAdd');
   this.name = 'locations-add'
 });

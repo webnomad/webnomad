@@ -1,14 +1,13 @@
-<template name="locations/add">
+<template name="locationsAdd">
   <h1>Add a location</h1>
 
   <form method="post">
-    <h2>Add a location</h2>
     <ul>
       <li>
-        <input type="text" placeholder="Name of the place" name="name" />
+        <input type="text" required placeholder="Name of the place" name="name" />
       </li>
       <li>
-        <select name="type">
+        <select name="type" required>
           <option value="restaurant">Restaurant</option>
           <option value="cafe">Coffeeshop/Tea-room</option>
           <option value="coworking">Coworking space</option>
@@ -16,7 +15,7 @@
         </select>
       </li>
       <li>
-        <input type="number" min="0" max="5" placeholder="wifi quality" name="wifi" />
+        <input type="number" required min="0" max="5" placeholder="wifi quality" name="wifi" />
       </li>
       <li>
         <label><input type="checkbox" name="power"> Power is avalaible</label>
@@ -28,7 +27,12 @@
         <input type="hidden" placeholder="longitude" name="lng" />
       </li>
       <li>
-        <input type="submit" value="Add this place" name="add_new" />
+      <paper-button type="submit">
+        <iron-icon icon="add"></iron-icon>
+        Add this location
+      </paper-button>
+
+
       </li>
     </ul>
   </form>
