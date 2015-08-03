@@ -5,7 +5,7 @@ Template.locations.helpers({
 
   locationToAttributes: function(loc) {
     var l = loc.hash.loc;
-    if(!(l.coordinates || l.coordinates.length || l.name)) {
+    if(!(l.coordinates && l.coordinates.length && l.name)) {
       return {};
     }
     return  {
