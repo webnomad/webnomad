@@ -1,0 +1,25 @@
+.locations project-map {
+    height: 100%;
+}
+
+a.location-add {
+  color: inherit;
+  text-decoration: inherit;
+
+  paper-button {
+    min-width: inherit;
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+    padding: 0;
+    font-weight: bold;
+    font-size: 1.3em;
+    border-radius: 60px;
+
+    paper-material {
+      width: 60px;
+      height: 60px;
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}

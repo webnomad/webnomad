@@ -1,18 +1,12 @@
 Template.locations.helpers({
-  locations: function () {
-    return Locations.find({});
-  },
-
-  locationToAttributes: function(loc) {
-    var l = loc.hash.loc;
-    if(!(l.coordinates && l.coordinates.length && l.name)) {
-      return {};
-    }
-    return  {
-      latitude: l.coordinates[0],
-      longitude: l.coordinates[1],
-      title: l.name
-    };
+  markers: function () {
+    return JSON.stringify(Locations.find({}).map(function(l) {
+      return {
+        latitude: l.coordinates[0],
+        longitude: l.coordinates[1],
+        title: l.name
+      }
+    }));
   }
 });
 

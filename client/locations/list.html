@@ -1,12 +1,9 @@
 <template name="locations">
-  <google-map id="mapcanvas" latitude="37.77493" longitude="-122.41942" zoom="2">
-    {{#each locations}}
-      <google-map-marker {{locationToAttributes loc=this}}>
-        <h1>{{name}}</h1>
-      </google-map-marker>
-    {{/each}}
-  </google-map>
+  <project-map id="mapcanvas" latitude="0" longitude="0" zoom="2" markers={{markers}}>
+  </project-map>
   <a href="{{pathFor route='locations.add'}}" class="location-add">
-    <paper-icon-button icon="add" title="Add your location"></paper-icon-button>
+    <paper-button title="Add your location" raised>
+      <iron-icon icon="add"></iron-icon>
+    </paper-button>
   </a>
 </template>

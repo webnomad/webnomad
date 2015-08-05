@@ -1,0 +1,52 @@
+<!--
+This is a workaround for dynamically adding markers.
+See https://github.com/GoogleWebComponents/google-map/issues/180
+If this is solved the component can be removed and <google-map> can be used
+directly in the html template.
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/google-map/google-map-marker.html">
+
+<dom-module id="project-map">
+  <style>
+    :host {
+      display: block;
+    }
+    google-map {
+      height: 100%;
+    }
+  </style>
+  <template>
+    <google-map id="[[id]]" latitude="[[latitude]]" longitude="[[longitude]]" zoom="[[zoom]]">
+      <template is="dom-repeat" items="[[markersObj]]" as="marker">
+        <google-map-marker latitude="[[marker.latitude]]" longitude="[[marker.longitude]]" title="[[marker.title]]">
+          <h1>[[marker.title]]</h1>
+        </google-map-marker>
+      </template>
+    </google-map>
+  </template>
+  <script>
+    Polymer({
+      is: "project-map",
+      properties: {
+        markers: {
+          type: String,
+          observer: "_markersChanged",
+          value: "[]"
+        },
+        markersObj: {
+          type: Array,
+          value: []
+        },
+        zoom: {
+          type: Number
+        }
+      },
+
+      _markersChanged: function(newValue) {
+        this.markersObj = JSON.parse(newValue);
+      }
+    })
+  </script>
+</dom-module>
