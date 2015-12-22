@@ -17,23 +17,53 @@
   <body>
     <template id="body" is="dom-bind">
       <leaflet-map fit-to-markers>
-        <template is="dom-repeat" items="{{locations}}">
-          <leaflet-marker longitude="{{item.position.longitude}}" latitude="{{item.position.latitude}}">
-            <h1>{{item.name}}</h1>
+        <template is="dom-repeat" items="[[locations]]">
+          <leaflet-marker longitude="[[item.position.longitude]]" latitude="[[item.position.latitude]]" title="[[item.name]]">
+            <h1>[[item.name]]</h1>
           </leaflet-marker>
         </template>
-      </leaflet-map>
+
+        <leaflet-geolocation enable-high-accuracy latitude="{{latitude}}" longitude="{{longitude}}" accuracy="{{accuracy}}" watch="true"></leaflet-geolocation>
+        <template is="dom-if" if="[[latitude]]">
+          <leaflet-marker latitude="[[latitude]]" longitude="[[longitude]]" id="user-marker" title="This is you">This is you</leaflet-marker>
+          <leaflet-circle latitude="[[latitude]]" longitude="[[longitude]]" radius="[[accuracy]]" color="#d00"></leaflet-circle>
+        </template>
+    </leaflet-map>
     </template>
   </body>
-  <script>
-    var body = document.querySelector('#body')
 
-    var remote = new Asteroid("localhost:3000")
-    var SpotsCollection = remote.getCollection("spots")
+  <script>
+    var app = document.querySelector('#body')
+
+    // Load spots
+    var remote = new Asteroid("api.webnomad.org")
+    var SpotsCollection = remote.getCollection('spots')
     var spots = SpotsCollection.reactiveQuery({})
-    var spotsSub = remote.subscribe("SpotsAll")
+    var spotsSub = remote.subscribe('SpotsAll')
     spots.on('change', () => {
-      body.locations = spots.result
+      app.locations = spots.result
+    })
+
+    function localizeUser(evt, userMarker) {
+      evt.target.removeEventListener(evt.type, arguments.callee)
+      var lmap = document.querySelector('leaflet-map')
+      var location = evt.detail
+      lmap.latitude = location.latitude
+      lmap.longitude = location.longitude
+      lmap.zoom = 16
+      setTimeout(function() {
+        var userMarker = document.querySelector('#user-marker')
+        userMarker.icon = L.icon({
+            "iconUrl": "images/position.png",
+            "iconSize": L.point(26, 25),
+            "iconAnchor": L.point(13, 13)
+        });
+      }, 0)
+    }
+
+    window.addEventListener('WebComponentsReady', function(e) {
+      var geolocation = document.querySelector('leaflet-geolocation')
+      geolocation.addEventListener('locationfound', localizeUser)
     })
   </script>
 </html>
