@@ -17,5 +17,9 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "asteroid": "~0.6.1",
+    "leaflet-map": "~1.1.0"
+  }
 }

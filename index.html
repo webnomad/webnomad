@@ -4,15 +4,21 @@
     <meta charset="utf-8">
     <title>There's no place home like the World - Webnomad</title>
 
+    <script src="bower_components/ddp.js/src/ddp.js"></script>
+    <script src="bower_components/q/q.js"></script>
+    <script src="bower_components/asteroid/dist/asteroid.browser.js"></script>
+
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="stylesheet" href="./css/main.css" title="no title" charset="utf-8">
-		<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+
     <link rel="import" href="./bower_components/leaflet-map/leaflet-map.html">
   </head>
+
   <body>
     <template id="body" is="dom-bind">
       <leaflet-map fit-to-markers>
         <template is="dom-repeat" items="{{locations}}">
-          <leaflet-marker longitude="{{item.longitude}}" latitude="{{item.latitude}}">
+          <leaflet-marker longitude="{{item.position.longitude}}" latitude="{{item.position.latitude}}">
             <h1>{{item.name}}</h1>
           </leaflet-marker>
         </template>
@@ -20,13 +26,14 @@
     </template>
   </body>
   <script>
-    var body = document.querySelector('#body');
-    body.locations = [
-      {name: "Palce 1", latitude: 43, longitude: 2},
-      {name: "Great other place", latitude: 40, longitude: 3},
-    ]
-    body.addEventListener('dom-change', () => {
-      console.log('changed!');
-    });
+    var body = document.querySelector('#body')
+
+    var remote = new Asteroid("localhost:3000")
+    var SpotsCollection = remote.getCollection("spots")
+    var spots = SpotsCollection.reactiveQuery({})
+    var spotsSub = remote.subscribe("SpotsAll")
+    spots.on('change', () => {
+      body.locations = spots.result
+    })
   </script>
 </html>
