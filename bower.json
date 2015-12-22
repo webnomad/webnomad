@@ -1,0 +1,21 @@
+{
+  "name": "WebNomad",
+  "authors": [
+    "Vincent Agnano <vincent.agnano@scopyleft.fr>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "moduleType": [
+    "es6"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
