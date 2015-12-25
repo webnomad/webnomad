@@ -7,19 +7,25 @@
     <script src="bower_components/ddp.js/src/ddp.js"></script>
     <script src="bower_components/q/q.js"></script>
     <script src="bower_components/asteroid/dist/asteroid.browser.js"></script>
+    <script src="js/routes.js"></script>
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="stylesheet" href="./css/main.css" title="no title" charset="utf-8">
 
     <link rel="import" href="./bower_components/leaflet-map/leaflet-map.html">
+    <link rel="import" href="./bower_components/iron-icon/iron-icon.html">
+    <link rel="import" href="./bower_components/paper-dialog/paper-dialog.html">
+    <link rel="import" href="./bower_components/paper-button/paper-button.html">
+    <link rel="import" href="./bower_components/paper-toast/paper-toast.html">
   </head>
 
   <body>
-    <template id="body" is="dom-bind">
+    <template id="app" is="dom-bind">
       <leaflet-map fit-to-markers>
         <template is="dom-repeat" items="[[locations]]">
           <leaflet-marker longitude="[[item.position.longitude]]" latitude="[[item.position.latitude]]" title="[[item.name]]">
             <h1>[[item.name]]</h1>
+            <a href="/workplace/[[item._id]]">Focus here</a>
           </leaflet-marker>
         </template>
 
@@ -29,41 +35,124 @@
           <leaflet-circle latitude="[[latitude]]" longitude="[[longitude]]" radius="[[accuracy]]" color="#d00"></leaflet-circle>
         </template>
     </leaflet-map>
-    </template>
+
+    <paper-button icon="icons:add-circle" id="add-spot" title="Contribute">+</paper-button>
+
+    <paper-dialog id="create-form" modal>
+      <h2>Add your workplace</h2>
+      <paper-dialog-scrollable>
+        <form id="save-spot-form">
+          <input type="hidden" name="latitude" value="[[latitude]]">
+          <input type="hidden" name="longitude" value="[[longitude]]">
+
+          <div class="required">
+            <label for="name">Name</label>
+            <input name="name" required>
+          </div>
+          <div>
+            <label for="wifi">Wi-Fi Quality</label>
+            <input type="range" name="wifi" min=0 max=5 default=3 id="wifi">
+          </div>
+          <div>
+            <label>
+              <input name="power" type="checkbox">Power Available
+            </label>
+          </div>
+          <div>
+            <label>
+              <select name="type" required>
+                <option value="coworking">Coworking space</option>
+                <option value="coffeeshop">Coffeeshop / Restaurant</option>
+                <option value="other">Library / Museum / other</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <textarea name="comment" placeholder="Anything to say?"></textarea>
+          </div>
+          <div>
+            <input name="author" placeholder="Your nickname">
+          </div>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Cancel</paper-button>
+            <paper-button dialog-confirm>Save</paper-button>
+          </div>
+        </form>
+      </paper-dialog-scrollable>
+    </paper-dialog>
+    <paper-toast></paper-toast>
   </body>
 
   <script>
-    var app = document.querySelector('#body')
+      window.addEventListener('WebComponentsReady', function(e) {
 
-    // Load spots
-    var remote = new Asteroid("api.webnomad.org")
-    var SpotsCollection = remote.getCollection('spots')
-    var spots = SpotsCollection.reactiveQuery({})
-    var spotsSub = remote.subscribe('SpotsAll')
-    spots.on('change', () => {
-      app.locations = spots.result
-    })
+      var app = document.querySelector('#app')
+      var alert = document.querySelector('paper-toast')
 
-    function localizeUser(evt, userMarker) {
-      evt.target.removeEventListener(evt.type, arguments.callee)
-      var lmap = document.querySelector('leaflet-map')
-      var location = evt.detail
-      lmap.latitude = location.latitude
-      lmap.longitude = location.longitude
-      lmap.zoom = 16
-      setTimeout(function() {
-        var userMarker = document.querySelector('#user-marker')
-        userMarker.icon = L.icon({
-            "iconUrl": "images/position.png",
-            "iconSize": L.point(26, 25),
-            "iconAnchor": L.point(13, 13)
-        });
-      }, 0)
-    }
+      document.querySelector("#add-spot").addEventListener("tap", function (e) {
+        document.querySelector('#create-form').open();
+      });
 
-    window.addEventListener('WebComponentsReady', function(e) {
+      // Load spots
+      var remote = new Asteroid("api.webnomad.org")
+      var SpotsCollection = remote.getCollection('spots')
+      var spotsSub = remote.subscribe('SpotsAll')
+      var spots = SpotsCollection.reactiveQuery({})
+      spots.on('change', () => {
+        app.locations = spots.result
+      })
+
+      function localizeUser(evt, userMarker) {
+        evt.target.removeEventListener(evt.type, arguments.callee)
+        var lmap = document.querySelector('leaflet-map')
+        var location = evt.detail
+        lmap.latitude = location.latitude
+        lmap.longitude = location.longitude
+        lmap.zoom = 16
+        setTimeout(function() {
+          var userMarker = document.querySelector('#user-marker')
+          userMarker.icon = L.icon({
+              "iconUrl": "images/position.png",
+              "iconSize": L.point(26, 25),
+              "iconAnchor": L.point(13, 13)
+          });
+        }, 0)
+      }
+
       var geolocation = document.querySelector('leaflet-geolocation')
       geolocation.addEventListener('locationfound', localizeUser)
-    })
+
+      app.addEventListener('dom-change', function() {});
+
+      var createForm = document.querySelector("#save-spot-form");
+      createForm.querySelector('[dialog-confirm]').addEventListener("tap", function (e) {
+        if(!app.latitude) {
+          alert.text = "You must be localized to Contribute"
+          alert.classList = ['error']
+          alert.open()
+        }
+        else {
+          createForm.submit()
+        }
+      })
+
+      createForm.addEventListener('submit', function(e) {
+        var data = {};
+        [].forEach.call(e.target.querySelectorAll('[name]'), function(input) {
+          data[input.attributes['name'].value] = input.value;
+        });
+        SpotsCollection.insert({
+          name: data.name,
+          wifiQuality: data.wifi,
+          powerAvailable: data.power,
+          comments: [data.comment],
+          position: {latitude: data.latitude, longitude: data.longitude},
+        })
+        alert.text = `${data.name} was added to the work spots!`
+        alert.classList = ['success']
+        alert.show()
+      });
+    });
+
   </script>
 </html>

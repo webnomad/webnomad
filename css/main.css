@@ -11,3 +11,20 @@ html, body {
 leaflet-map {
   height: 100%;
 }
+
+#add-spot {
+  position: absolute;
+  bottom: 3%;
+  right: 3%;
+  color: black;
+  background-color: #fff;
+  font-size: 2em;
+  padding: 0;
+  border-radius: 50px;
+  z-index: 9;
+  display: inline;
+}
+
+.error {
+  --paper-toast-background-color: #900;
+}
