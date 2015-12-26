@@ -28,3 +28,54 @@ leaflet-map {
 .error {
   --paper-toast-background-color: #900;
 }
+
+#create-form {
+  width: 80%;
+  min-width: 400px;
+  max-width: 600px;
+}
+
+form {
+  width: 100%;
+  padding: 30px;
+}
+
+form .required label {
+  font-weight: bold;
+}
+form .required label:after {
+  content: " *";
+}
+form > div {
+  margin-bottom: 1em;
+}
+form label {
+  display: block;
+  margin-bottom: .5rem;
+  color: #333;
+  font-size: 1.1em;
+  display: inline-block;
+  width: 20%;
+}
+
+form input[type=text],
+form input[type=range],
+form select,
+form textarea {
+  display: inline-block;
+  width: 70%;
+  margin: 0 0 0 9%;
+  border: 1px solid #888;
+  border-radius: 5px;
+  padding: .5rem 1rem;
+  font: inherit;
+  color: inherit;
+}
+
+form input[type=range] {
+  border: 0;
+}
+
+form input[type=checkbox] {
+  margin-right: 1rem;
+}

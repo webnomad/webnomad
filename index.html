@@ -46,19 +46,20 @@
 
           <div class="required">
             <label for="name">Name</label>
-            <input name="name" required>
+            <input type=text name="name" required>
           </div>
           <div>
-            <label for="wifi">Wi-Fi Quality</label>
-            <input type="range" name="wifi" min=0 max=5 default=3 id="wifi">
+            <label for="wifi">WiFi Quality</label>
+            <input type=range name="wifi" min=0 max=5 value=3 id="wifi">
           </div>
           <div>
             <label>
-              <input name="power" type="checkbox">Power Available
+              <input name="power" type="checkbox">Power is available
             </label>
           </div>
           <div>
             <label>
+              <label for="name">Type of place</label>
               <select name="type" required>
                 <option value="coworking">Coworking space</option>
                 <option value="coffeeshop">Coffeeshop / Restaurant</option>
@@ -67,10 +68,12 @@
             </label>
           </div>
           <div>
-            <textarea name="comment" placeholder="Anything to say?"></textarea>
+            <label for="name">Anything to say?</label>
+            <textarea name="comment"></textarea>
           </div>
           <div>
-            <input name="author" placeholder="Your nickname">
+            <label for="name">Who are you?</label>
+            <input type=text name="author">
           </div>
           <div class="buttons">
             <paper-button dialog-dismiss>Cancel</paper-button>
