@@ -2,27 +2,30 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>There's no place home like the World - Webnomad</title>
 
     <script src="bower_components/ddp.js/src/ddp.js"></script>
     <script src="bower_components/q/q.js"></script>
     <script src="bower_components/asteroid/dist/asteroid.browser.js"></script>
-    <script src="js/routes.js"></script>
+    <!-- <script src="js/routes.js"></script> -->
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="stylesheet" href="./css/main.css" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="./css/main.css" charset="utf-8">
 
+    <link rel="import" href="./bower_components/iron-form/iron-form.html">
     <link rel="import" href="./bower_components/leaflet-map/leaflet-map.html">
-    <link rel="import" href="./bower_components/iron-icon/iron-icon.html">
+    <link rel="import" href="./bower_components/iron-icons/iron-icons.html">
     <link rel="import" href="./bower_components/paper-dialog/paper-dialog.html">
     <link rel="import" href="./bower_components/paper-button/paper-button.html">
+    <link rel="import" href="./bower_components/paper-icon-button/paper-icon-button.html">
     <link rel="import" href="./bower_components/paper-toast/paper-toast.html">
   </head>
 
   <body>
     <template id="app" is="dom-bind">
       <leaflet-map max-zoom=18 fit-to-markers>
-        <template is="dom-repeat" items="[[locations]]">
+        <template is="dom-repeat" items="[[spots]]">
           <leaflet-marker longitude="[[item.position.longitude]]" latitude="[[item.position.latitude]]" title="[[item.name]]">
             <h1>[[item.name]]</h1>
           </leaflet-marker>
@@ -35,16 +38,16 @@
         </template>
     </leaflet-map>
 
-    <paper-button icon="icons:add-circle" id="add-spot" title="Contribute">+</paper-button>
+    <paper-icon-button icon="icons:add" id="add-spot" title="Contribute">+</paper-icon-button>
 
-    <paper-dialog id="create-form" modal>
+    <paper-dialog id="create-form" modal center>
       <h2>Add your workplace</h2>
       <paper-dialog-scrollable>
-        <form id="save-spot-form">
+        <form method=post>
           <input type="hidden" name="latitude" value="[[latitude]]">
           <input type="hidden" name="longitude" value="[[longitude]]">
 
-          <div class="required">
+          <div class="control required">
             <label for="name">Name</label>
             <input type=text name="name" required>
           </div>
@@ -53,19 +56,16 @@
             <input type=range name="wifi" min=0 max=5 value=3 id="wifi">
           </div>
           <div>
-            <label>
-              <input name="power" type="checkbox">Power is available
-            </label>
+              <input name="power" type="checkbox">
+              <label>Power is available</label>
           </div>
           <div>
-            <label>
-              <label for="name">Type of place</label>
-              <select name="type" required>
-                <option value="coworking">Coworking space</option>
-                <option value="coffeeshop">Coffeeshop / Restaurant</option>
-                <option value="other">Library / Museum / other</option>
-              </select>
-            </label>
+            <label for="name">Type of place</label>
+            <select name="type" required>
+              <option value="coworking">Coworking space</option>
+              <option value="coffeeshop">Coffeeshop / Restaurant</option>
+              <option value="other">Library / Museum / other</option>
+            </select>
           </div>
           <div>
             <label for="name">Anything to say?</label>
@@ -76,8 +76,8 @@
             <input type=text name="author">
           </div>
           <div class="buttons">
-            <paper-button dialog-dismiss>Cancel</paper-button>
-            <paper-button dialog-confirm>Save</paper-button>
+            <paper-button dialog-dismiss class="clear">Cancel</paper-button>
+            <paper-button class="save">Save</paper-button>
           </div>
         </form>
       </paper-dialog-scrollable>
@@ -86,28 +86,26 @@
   </body>
 
   <script>
-      window.addEventListener('WebComponentsReady', function(e) {
+    window.addEventListener('WebComponentsReady', function(e) {
 
       var app = document.querySelector('#app')
       var alert = document.querySelector('paper-toast')
-
-      document.querySelector("#add-spot").addEventListener("tap", function (e) {
-        document.querySelector('#create-form').open();
-      });
 
       // Load spots
       var remote = new Asteroid("api.webnomad.org")
       var SpotsCollection = remote.getCollection('spots')
       var spotsSub = remote.subscribe('SpotsAll')
       var spots = SpotsCollection.reactiveQuery({})
-      spots.on('change', () => {
-        app.locations = spots.result
+      spots.on('change', function() {
+        app.spots = spots.result
       })
 
-      function localizeUser(evt, userMarker) {
+      // Locate user
+      function localizeUser(evt) {
         evt.target.removeEventListener(evt.type, arguments.callee)
         var lmap = document.querySelector('leaflet-map')
         var location = evt.detail
+        // hack to next tick
         setTimeout(function() {
           lmap.latitude = location.latitude
           lmap.longitude = location.longitude
@@ -120,28 +118,43 @@
           });
         }, 10)
       }
-
       var geolocation = document.querySelector('leaflet-geolocation')
       geolocation.addEventListener('locationfound', localizeUser)
 
+      // May serve soon
       app.addEventListener('dom-change', function() {});
 
-      var createForm = document.querySelector("#save-spot-form");
-      createForm.querySelector('[dialog-confirm]').addEventListener("tap", function (e) {
+      // Form popup
+      var createFormModal = document.querySelector('#create-form')
+      var createForm = createFormModal.querySelector('form')
+      document.querySelector('#add-spot').addEventListener('tap', function() {
+        createFormModal.open()
+      })
+
+      // Click save close modal
+      createFormModal.querySelector('.save').addEventListener('click', function(e) {
         if(!app.latitude) {
           alert.text = "You must be localized to Contribute"
+          alert.className = 'error'
+          alert.open()
+        }
+        else if(!createForm.checkValidity()) {
+          alert.text = "Please check your values"
           alert.classList = ['error']
           alert.open()
         }
         else {
           createForm.submit()
+          createFormModal.close()
         }
       })
 
-      createForm.addEventListener('submit', function(e) {
+      // Click save submits form
+      createForm.submit = function() {
+        debugger
         var data = {};
         [].forEach.call(e.target.querySelectorAll('[name]'), function(input) {
-          data[input.attributes['name'].value] = input.value;
+          data[input.attributes['name'].value] = input.value
         });
         SpotsCollection.insert({
           name: data.name,
@@ -153,8 +166,9 @@
         alert.text = `${data.name} was added to the work spots!`
         alert.classList = ['success']
         alert.show()
-      });
-    });
+        return false
+      }
+    })
 
   </script>
 </html>

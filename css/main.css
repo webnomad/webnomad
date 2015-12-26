@@ -6,6 +6,7 @@ html, body {
   padding: 0;
   margin: 0;
   height: 100%;
+  font-family: Helvetica, sans-serif;
 }
 
 leaflet-map {
@@ -16,13 +17,11 @@ leaflet-map {
   position: absolute;
   bottom: 3%;
   right: 3%;
-  color: black;
-  background-color: #fff;
-  font-size: 2em;
-  padding: 0;
+  width: 70px;
+  height: 70px;
   border-radius: 50px;
-  z-index: 9;
-  display: inline;
+  background-color: #fff;
+  box-shadow: 0 0 5px #999;
 }
 
 .error {
@@ -57,6 +56,9 @@ form label {
   display: inline-block;
   width: 20%;
 }
+form [type=checkbox] + label {
+  width: inherit;
+}
 
 form input[type=text],
 form input[type=range],
@@ -78,4 +80,10 @@ form input[type=range] {
 
 form input[type=checkbox] {
   margin-right: 1rem;
+  margin-left: 30%;
+}
+
+.error {
+  background-color: #900;
+  color: #fff;
 }
