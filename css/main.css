@@ -53,20 +53,18 @@ form label {
   margin-bottom: .5rem;
   color: #333;
   font-size: 1.1em;
-  display: inline-block;
-  width: 20%;
 }
 form [type=checkbox] + label {
   width: inherit;
+  display: inline;
 }
 
 form input[type=text],
 form input[type=range],
 form select,
 form textarea {
-  display: inline-block;
-  width: 70%;
-  margin: 0 0 0 9%;
+  display: block;
+  width: 90%;
   border: 1px solid #888;
   border-radius: 5px;
   padding: .5rem 1rem;
@@ -76,11 +74,6 @@ form textarea {
 
 form input[type=range] {
   border: 0;
-}
-
-form input[type=checkbox] {
-  margin-right: 1rem;
-  margin-left: 30%;
 }
 
 .error {
