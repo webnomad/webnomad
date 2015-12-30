@@ -15,22 +15,29 @@
     <link rel="stylesheet" href="./css/main.css" charset="utf-8">
     <link rel="stylesheet" href="./css/large.css" media="(min-width: 800px)">
 
-    <link rel="import" href="./bower_components/iron-form/iron-form.html">
     <link rel="import" href="./bower_components/leaflet-map/leaflet-map.html">
-    <link rel="import" href="./bower_components/iron-icons/iron-icons.html">
-    <link rel="import" href="./bower_components/paper-dialog/paper-dialog.html">
-    <link rel="import" href="./bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
-    <link rel="import" href="./bower_components/paper-button/paper-button.html">
-    <link rel="import" href="./bower_components/paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="./bower_components/iron-icons/device-icons.html">
     <link rel="import" href="./bower_components/paper-toast/paper-toast.html">
+    <link rel="import" href="./elements/spot-editor.html">
   </head>
 
   <body>
     <template id="app" is="dom-bind">
       <leaflet-map max-zoom=18 fit-to-markers>
-        <template is="dom-repeat" items="[[spots]]">
-          <leaflet-marker longitude="[[item.position.longitude]]" latitude="[[item.position.latitude]]" title="[[item.name]]">
-            <h1>[[item.name]]</h1>
+        <template is="dom-repeat" items="[[spots]]" as=spot>
+          <leaflet-marker longitude="[[spot.position.longitude]]" latitude="[[spot.position.latitude]]" title="[[spot.name]]">
+            <h1>[[spot.name]]</h1>
+            <section>
+              <template is="dom-if" if="[[spot.wiFiQuality]]">
+                <iron-icon icon="device:signal-wifi-4-bar" title="[[spot.wiFiQuality]]">[[spot.wiFiQuality]]</iron-icon>
+              </template>
+              <template is="dom-if" if="[[!spot.powerAvailable]]">
+                <iron-icon icon="device:power" title="Power available">Power available</iron-icon>
+              </template>
+              <template is="dom-repeat" items=[[spot.comments]] as=comment>
+                <p>[[comment]]</p>
+              </template>
+            </section>
           </leaflet-marker>
         </template>
 
@@ -39,66 +46,31 @@
           <leaflet-marker latitude="[[latitude]]" longitude="[[longitude]]" id="user-marker" title="This is you">This is you</leaflet-marker>
           <leaflet-circle latitude="[[latitude]]" longitude="[[longitude]]" radius="[[accuracy]]" color="#d00"></leaflet-circle>
         </template>
-    </leaflet-map>
+      </leaflet-map>
 
-    <paper-icon-button icon="icons:add" id="add-spot" title="Contribute">+</paper-icon-button>
+      <spot-editor latitude="[[latitude]]" longitude="[[longitude]]"></spot-editor>
 
-    <paper-dialog id="create-form" modal center>
-      <h2>Add your workplace</h2>
-      <paper-dialog-scrollable>
-        <form method=post>
-          <input type="hidden" name="latitude" value="[[latitude]]">
-          <input type="hidden" name="longitude" value="[[longitude]]">
-
-          <div class="control required">
-            <label for="name">Name</label>
-            <input type=text name="name" required>
-          </div>
-          <div>
-            <label for="wifi">WiFi Quality</label>
-            <input type=range name="wifi" min=0 max=5 value=3 id="wifi">
-          </div>
-          <div>
-              <input name="power" type="checkbox" id="power-available">
-              <label for="power-available">Power is available</label>
-          </div>
-          <div>
-            <label for="name">Type of place</label>
-            <select name="type" required>
-              <option value="coworking">Coworking space</option>
-              <option value="coffeeshop">Coffeeshop / Restaurant</option>
-              <option value="other">Library / Museum / other</option>
-            </select>
-          </div>
-          <div>
-            <label for="name">Anything to say?</label>
-            <textarea name="comment"></textarea>
-          </div>
-          <div>
-            <label for="name">Your nickname</label>
-            <input type=text name="author">
-          </div>
-          <div class="buttons">
-            <paper-button dialog-dismiss class="clear">Cancel</paper-button>
-            <paper-button class="save">Save</paper-button>
-          </div>
-        </form>
-      </paper-dialog-scrollable>
-    </paper-dialog>
-    <paper-toast></paper-toast>
+      <paper-toast></paper-toast>
+    </template>
   </body>
 
   <script>
+    var serverURL = 'api.webnomad.org'
+    // var serverURL = 'localhost:3000'
+
     window.addEventListener('WebComponentsReady', function(e) {
 
       var app = document.querySelector('#app')
       var alert = document.querySelector('paper-toast')
+      var editor = document.querySelector('spot-editor')
 
       // Load spots
-      var remote = new Asteroid("api.webnomad.org")
-      var SpotsCollection = remote.getCollection('spots')
-      var spotsSub = remote.subscribe('SpotsAll')
-      var spots = SpotsCollection.reactiveQuery({})
+      var remote = new Asteroid(serverURL)
+      var Spots = remote.getCollection('spots')
+      var spots = Spots.reactiveQuery({})
+
+      // Inject spots into app and listen
+      app.spots = spots.result
       spots.on('change', function() {
         app.spots = spots.result
       })
@@ -127,50 +99,18 @@
       // May serve soon
       app.addEventListener('dom-change', function() {});
 
-      // Form popup
-      var createFormModal = document.querySelector('#create-form')
-      var createForm = createFormModal.querySelector('form')
-      document.querySelector('#add-spot').addEventListener('tap', function() {
-        createFormModal.open()
-      })
-
-      // Click save close modal
-      createFormModal.querySelector('.save').addEventListener('click', function(e) {
-        if(!app.latitude) {
-          alert.text = "You must be localized to Contribute"
-          alert.className = 'error'
-          alert.open()
-        }
-        else if(!createForm.checkValidity()) {
-          alert.text = "Please check your values"
-          alert.classList = ['error']
-          alert.open()
-        }
-        else {
-          createForm.submit()
-          createFormModal.close()
-        }
-      })
-
-      // Click save submits form
-      createForm.submit = function() {
-        debugger
-        var data = {};
-        [].forEach.call(e.target.querySelectorAll('[name]'), function(input) {
-          data[input.attributes['name'].value] = input.value
-        });
-        SpotsCollection.insert({
-          name: data.name,
-          wifiQuality: data.wifi,
-          powerAvailable: data.power,
-          comments: [data.comment],
-          position: {latitude: data.latitude, longitude: data.longitude},
-        })
-        alert.text = `${data.name} was added to the work spots!`
-        alert.classList = ['success']
+      // Editor
+      editor.collection = Spots
+      editor.addEventListener('invalid', function(event) {
+        alert.text = event.detail
+        alert.className = 'error'
         alert.show()
-        return false
-      }
+      })
+      editor.addEventListener('created', function(event) {
+        alert.text = event.detail
+        alert.className = 'success'
+        alert.show()
+      })
     })
 
   </script>
