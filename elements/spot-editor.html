@@ -1,0 +1,139 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+
+<dom-module id="spot-editor">
+  <style>
+    :host {
+      display: block;
+    }
+
+    paper-dialog,
+    paper-dialog-scrollable {
+      width: 100%;
+    }
+
+    #addspot {
+      position: absolute;
+      bottom: 3%;
+      right: 3%;
+      width: 70px;
+      height: 70px;
+      border-radius: 50px;
+      background-color: #fff;
+      box-shadow: 0 0 5px #999;
+    }
+
+  </style>
+
+  <template>
+    <paper-icon-button icon="icons:add" id="addspot" title="Contribute">+</paper-icon-button>
+
+    <paper-dialog id="modal" modal center>
+      <h1>Add your workplace</h1>
+      <paper-dialog-scrollable>
+        <form method=post>
+          <input type="hidden" name="latitude" value="[[latitude]]">
+          <input type="hidden" name="longitude" value="[[longitude]]">
+
+          <div class="control required">
+            <label for="name">Name</label>
+            <input type=text name="name" required>
+          </div>
+          <div>
+            <label for="wifi">WiFi Quality</label>
+            <input type=range name="wifi" min=0 max=5 value=3 id="wifi">
+          </div>
+          <div>
+              <input name="power" type="checkbox" id="power-available">
+              <label for="power-available">Power is available</label>
+          </div>
+          <div>
+            <label for="name">Type of place</label>
+            <select name="type" required>
+              <option value="coworking">Coworking space</option>
+              <option value="coffeeshop">Coffeeshop / Restaurant</option>
+              <option value="other">Library / Museum / other</option>
+            </select>
+          </div>
+          <div>
+            <label for="name">Anything to say?</label>
+            <textarea name="comment"></textarea>
+          </div>
+          <div>
+            <label for="name">Your nickname</label>
+            <input type=text name="author">
+          </div>
+          <div class="buttons">
+            <paper-button dialog-dismiss class="clear">Cancel</paper-button>
+            <paper-button class="save">Save</paper-button>
+          </div>
+        </form>
+      </paper-dialog-scrollable>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'spot-editor',
+      properties: {
+        latitude: {
+          type: Number,
+        },
+        longitude: {
+          type: Number,
+        },
+        collection: {
+          type: Object,
+        }
+      },
+
+      ready: function() {
+        self = this
+        // Form popup
+        var createFormModal = this.$.modal
+        var createForm = createFormModal.querySelector('form')
+        this.$.addspot.addEventListener('tap', function() {
+          createFormModal.open()
+        })
+
+        // Click save close modal
+        createFormModal.querySelector('.save').addEventListener('click', function(e) {
+          var latitude = createForm.querySelector('[name=latitude]').value
+          if(!latitude) {
+            self.fire('invalid', 'You must be localized to be able to contribute.');
+          }
+          else if(!createForm.checkValidity()) {
+            self.fire('invalid', 'Some data you entered is missing or invalid.')
+          }
+          else {
+            createForm.submit(e)
+            createFormModal.close()
+          }
+        })
+
+        // Click save submits form
+        createForm.submit = function(e) {
+          var data = {};
+          [].forEach.call(createForm.querySelectorAll('[name]'), function(input) {
+            data[input.attributes['name'].value] = input.value
+          });
+          self.collection.insert({
+            name: data.name,
+            wifiQuality: data.wifi,
+            powerAvailable: data.power,
+            comments: [data.comment],
+            position: {latitude: data.latitude, longitude: data.longitude},
+          })
+
+          self.fire('created', `${data.name} was successfully added.`)
+          return false
+        }
+      },
+    })
+  </script>
+</dom-module>

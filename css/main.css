@@ -13,22 +13,11 @@ leaflet-map {
   height: 100%;
 }
 
-#add-spot {
-  position: absolute;
-  bottom: 3%;
-  right: 3%;
-  width: 70px;
-  height: 70px;
-  border-radius: 50px;
-  background-color: #fff;
-  box-shadow: 0 0 5px #999;
-}
-
 .error {
   --paper-toast-background-color: #900;
 }
 
-#create-form {
+spot-editor #modal {
   width: 80%;
   min-width: 400px;
   max-width: 600px;
