@@ -23,7 +23,7 @@
 
   <body>
     <template id="app" is="dom-bind">
-      <leaflet-map max-zoom=18 fit-to-markers>
+      <leaflet-map max-zoom=18 zoom=3 fit-to-markers>
         <template is="dom-repeat" items="[[spots]]" as=spot>
           <leaflet-marker longitude="[[spot.position.longitude]]" latitude="[[spot.position.latitude]]" title="[[spot.name]]">
             <h1>[[spot.name]]</h1>
@@ -56,7 +56,6 @@
 
   <script>
     var serverURL = 'api.webnomad.org'
-    // var serverURL = 'localhost:3000'
 
     window.addEventListener('WebComponentsReady', function(e) {
 
