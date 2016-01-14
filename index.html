@@ -23,7 +23,11 @@
 
   <body>
     <template id="app" is="dom-bind">
+<<<<<<< HEAD
       <leaflet-map max-zoom=18 zoom=3 fit-to-markers>
+=======
+      <leaflet-map max-zoom=18 fit-to-markers>
+>>>>>>> e6766441afe7abb076909aaad68dd204a3e81091
         <template is="dom-repeat" items="[[spots]]" as=spot>
           <leaflet-marker longitude="[[spot.position.longitude]]" latitude="[[spot.position.latitude]]" title="[[spot.name]]">
             <h1>[[spot.name]]</h1>
