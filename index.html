@@ -34,6 +34,12 @@
               <template is="dom-if" if="[[!spot.powerAvailable]]">
                 <iron-icon icon="device:power" title="Power available">Power available</iron-icon>
               </template>
+              <template is="dom-if" if="[[spot.address]]">
+                <address>
+                  <span>[[spot.address.house_number]]</span> <span>[[spot.address.pedestrian]]</span><br>
+                  <span>[[spot.address.postcode]]</span> <span>[[spot.address.city]]</span><br> <span>[[spot.address.country]]</span>
+                </address>
+              </template>
               <template is="dom-repeat" items=[[spot.comments]] as=comment>
                 <p>[[comment]]</p>
               </template>
