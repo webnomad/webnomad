@@ -1,0 +1,82 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/device-icons.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-map.html">
+<link rel="import" href="../bower_components/leaflet-map/leaflet-marker.html">
+
+
+<dom-module id="app-map">
+  <template>
+    <leaflet-map max-zoom=18 zoom=3>
+      <template is="dom-repeat" items="[[spots]]" as=spot>
+        <leaflet-marker longitude="[[spot.position.longitude]]" latitude="[[spot.position.latitude]]" title="[[spot.name]]">
+          <h1>[[spot.name]]</h1>
+          <section>
+            <template is="dom-if" if="[[spot.wiFiQuality]]">
+              <iron-icon icon="device:signal-wifi-4-bar" title="[[spot.wiFiQuality]]">[[spot.wiFiQuality]]</iron-icon>
+            </template>
+            <template is="dom-if" if="[[!spot.powerAvailable]]">
+              <iron-icon icon="device:power" title="Power available">Power available</iron-icon>
+            </template>
+            <template is="dom-if" if="[[spot.address]]">
+              <address>
+                <span>[[spot.address.house_number]]</span> <span>[[spot.address.pedestrian]]</span><br>
+                <span>[[spot.address.postcode]]</span> <span>[[spot.address.city]]</span><br> <span>[[spot.address.country]]</span>
+              </address>
+            </template>
+            <template is="dom-repeat" items=[[spot.comments]] as=comment>
+              <p>[[comment]]</p>
+            </template>
+          </section>
+        </leaflet-marker>
+      </template>
+
+      <leaflet-geolocation enable-high-accuracy latitude="{{latitude}}" longitude="{{longitude}}" accuracy="{{accuracy}}" watch="true"></leaflet-geolocation>
+      <template is="dom-if" if="[[latitude]]">
+        <leaflet-marker latitude="[[latitude]]" longitude="[[longitude]]" id="user-marker" title="This is you">This is you</leaflet-marker>
+        <leaflet-circle latitude="[[latitude]]" longitude="[[longitude]]" radius="[[accuracy]]" color="#d00"></leaflet-circle>
+      </template>
+    </leaflet-map>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'app-map',
+
+      properties: {
+        'spots': {
+          type: Array,
+        },
+        'userLocation': {
+          type: Object,
+        }
+      },
+
+      ready() {
+        L.Icon.Default.imagePath = '../bower_components/leaflet/dist/images/'
+        var geo = Polymer.dom(this.root).querySelector('leaflet-geolocation')
+        geo.addEventListener('locationfound', this.localizeUser)
+      },
+
+      localizeUser(evt) {
+        var self = this;
+        evt.target.removeEventListener(evt.type, arguments.callee)
+        var lmap = document.querySelector('leaflet-map')
+        var location = evt.detail
+        // hack to next tick
+        setTimeout(function() {
+          lmap.latitude = location.latitude
+          lmap.longitude = location.longitude
+          lmap.zoom = 16
+          var userMarker = document.querySelector('#user-marker')
+          userMarker.icon = L.icon({
+              "iconUrl": "images/position.png",
+              "iconSize": L.point(26, 25),
+              "iconAnchor": L.point(13, 13)
+          });
+          self.fire('location', location);
+        }, 10)
+      }
+    })
+  </script>
+</dom-module>

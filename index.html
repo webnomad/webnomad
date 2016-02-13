@@ -15,96 +15,54 @@
     <link rel="stylesheet" href="./css/main.css" charset="utf-8">
     <link rel="stylesheet" href="./css/large.css" media="(min-width: 800px)">
 
-    <link rel="import" href="./bower_components/leaflet-map/leaflet-map.html">
-    <link rel="import" href="./bower_components/iron-icons/device-icons.html">
     <link rel="import" href="./bower_components/paper-toast/paper-toast.html">
+    <link rel="import" href="./elements/app-map.html">
     <link rel="import" href="./elements/spot-editor.html">
   </head>
 
   <body>
-    <template id="app" is="dom-bind">
-      <leaflet-map max-zoom=18 zoom=3>
-        <template is="dom-repeat" items="[[spots]]" as=spot>
-          <leaflet-marker longitude="[[spot.position.longitude]]" latitude="[[spot.position.latitude]]" title="[[spot.name]]">
-            <h1>[[spot.name]]</h1>
-            <section>
-              <template is="dom-if" if="[[spot.wiFiQuality]]">
-                <iron-icon icon="device:signal-wifi-4-bar" title="[[spot.wiFiQuality]]">[[spot.wiFiQuality]]</iron-icon>
-              </template>
-              <template is="dom-if" if="[[!spot.powerAvailable]]">
-                <iron-icon icon="device:power" title="Power available">Power available</iron-icon>
-              </template>
-              <template is="dom-if" if="[[spot.address]]">
-                <address>
-                  <span>[[spot.address.house_number]]</span> <span>[[spot.address.pedestrian]]</span><br>
-                  <span>[[spot.address.postcode]]</span> <span>[[spot.address.city]]</span><br> <span>[[spot.address.country]]</span>
-                </address>
-              </template>
-              <template is="dom-repeat" items=[[spot.comments]] as=comment>
-                <p>[[comment]]</p>
-              </template>
-            </section>
-          </leaflet-marker>
-        </template>
-
-        <leaflet-geolocation enable-high-accuracy latitude="{{latitude}}" longitude="{{longitude}}" accuracy="{{accuracy}}" watch="true"></leaflet-geolocation>
-        <template is="dom-if" if="[[latitude]]">
-          <leaflet-marker latitude="[[latitude]]" longitude="[[longitude]]" id="user-marker" title="This is you">This is you</leaflet-marker>
-          <leaflet-circle latitude="[[latitude]]" longitude="[[longitude]]" radius="[[accuracy]]" color="#d00"></leaflet-circle>
-        </template>
-      </leaflet-map>
-
-      <spot-editor latitude="[[latitude]]" longitude="[[longitude]]"></spot-editor>
-
-      <paper-toast></paper-toast>
-    </template>
+    <app-map></app-map>
+    <spot-editor latitude="[[latitude]]" longitude="[[longitude]]"></spot-editor>
+    <paper-toast></paper-toast>
   </body>
 
   <script>
     var serverURL = 'api.webnomad.org'
 
     window.addEventListener('WebComponentsReady', function(e) {
-
-      var app = document.querySelector('#app')
+      var map = document.querySelector('app-map')
       var alert = document.querySelector('paper-toast')
       var editor = document.querySelector('spot-editor')
+      var user = JSON.parse(localStorage.getItem('user')) || {name: '', location: {}};
+
+      // User
+      // Listen for geolocation and update user
+      map.addEventListener('location', function(event) {
+        user.location = event.detail
+      })
+
+      // When user change update components (user.location >> editor lat/lng)
+      Object.observe(user, function(change) {
+        editor.user = user
+        localStorage.setItem('user', JSON.stringify({name: user.name, location: {}}));
+      })
+
+      editor.addEventListener('save', function(event) {
+        user.name = event.detail.author
+      })
 
       // Load spots
       var remote = new Asteroid(serverURL)
       var Spots = remote.getCollection('spots')
       var spots = Spots.reactiveQuery({})
 
-      // Inject spots into app and listen
-      app.spots = spots.result
+      // Inject spots into map
+      map.spots = spots.result
       spots.on('change', function() {
-        app.spots = spots.result
+        map.spots = spots.result
       })
 
-      // Locate user
-      function localizeUser(evt) {
-        evt.target.removeEventListener(evt.type, arguments.callee)
-        var lmap = document.querySelector('leaflet-map')
-        var location = evt.detail
-        // hack to next tick
-        setTimeout(function() {
-          lmap.latitude = location.latitude
-          lmap.longitude = location.longitude
-          lmap.zoom = 16
-          var userMarker = document.querySelector('#user-marker')
-          userMarker.icon = L.icon({
-              "iconUrl": "images/position.png",
-              "iconSize": L.point(26, 25),
-              "iconAnchor": L.point(13, 13)
-          });
-        }, 10)
-      }
-      var geolocation = document.querySelector('leaflet-geolocation')
-      geolocation.addEventListener('locationfound', localizeUser)
-
-      // May serve soon
-      app.addEventListener('dom-change', function() {});
-
-      // Editor
+      // Editor listening
       editor.collection = Spots
       editor.addEventListener('invalid', function(event) {
         alert.text = event.detail

@@ -37,8 +37,8 @@
       <h1>Add your workplace</h1>
       <paper-dialog-scrollable>
         <form method=post>
-          <input type="hidden" name="latitude" value="[[latitude]]">
-          <input type="hidden" name="longitude" value="[[longitude]]">
+          <input type="hidden" name="latitude" value="[[user.location.latitude]]">
+          <input type="hidden" name="longitude" value="[[user.location.longitude]]">
 
           <div class="control required">
             <label for="name">Name</label>
@@ -53,20 +53,20 @@
               <label for="power-available">Power is available</label>
           </div>
           <div>
-            <label for="name">Type of place</label>
-            <select name="type" required>
+            <label for="type">Type of place</label>
+            <select name="type" id="type" required>
               <option value="coworking">Coworking space</option>
               <option value="coffeeshop">Coffeeshop / Restaurant</option>
               <option value="other">Library / Museum / other</option>
             </select>
           </div>
           <div>
-            <label for="name">Anything to say?</label>
-            <textarea name="comment"></textarea>
+            <label for="comment">Anything to say?</label>
+            <textarea name="comment" id="comment"></textarea>
           </div>
           <div>
-            <label for="name">Your nickname</label>
-            <input type=text name="author">
+            <label for="author">Your nickname</label>
+            <input type=text name="author" id="author" value=[[user.name]]>
           </div>
           <div class="buttons">
             <paper-button dialog-dismiss class="clear">Cancel</paper-button>
@@ -81,15 +81,12 @@
     Polymer({
       is: 'spot-editor',
       properties: {
-        latitude: {
-          type: Number,
-        },
-        longitude: {
-          type: Number,
+        user: {
+          type: Object,
         },
         collection: {
           type: Object,
-        }
+        },
       },
 
       ready: function() {
@@ -130,6 +127,7 @@
             position: {latitude: data.latitude, longitude: data.longitude},
           })
 
+          self.fire('save', data)
           self.fire('created', `${data.name} was successfully added.`)
           return false
         }
