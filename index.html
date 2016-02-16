@@ -41,12 +41,6 @@
         user.location = event.detail
       })
 
-      // When user change update components (user.location >> editor lat/lng)
-      Object.observe(user, function(change) {
-        editor.user = user
-        localStorage.setItem('user', JSON.stringify({name: user.name, location: {}}));
-      })
-
       editor.addEventListener('save', function(event) {
         user.name = event.detail.author
       })
