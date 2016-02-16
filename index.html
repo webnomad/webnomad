@@ -35,14 +35,22 @@
       var editor = document.querySelector('spot-editor')
       var user = JSON.parse(localStorage.getItem('user')) || {name: '', location: {}};
 
+      function updateUser(data) {
+        Object.keys(data).forEach(function(key) {user[key] = data[key]})
+        editor.user = user
+        localStorage.setItem('user', JSON.stringify(
+          {name: user.name, location: {}}
+        ));
+      }
+
       // User
       // Listen for geolocation and update user
       map.addEventListener('location', function(event) {
-        user.location = event.detail
+        updateUser({location: event.detail})
       })
 
       editor.addEventListener('save', function(event) {
-        user.name = event.detail.author
+        updateUser({name: event.detail.author})
       })
 
       // Load spots
