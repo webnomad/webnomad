@@ -115,21 +115,19 @@
 
         // Click save submits form
         createForm.submit = function(e) {
-          var data = {};
-          [].forEach.call(createForm.querySelectorAll('[name]'), function(input) {
+          e.preventDefault()
+          var data = {}
+          ;[].forEach.call(createForm.querySelectorAll('[name]'), function(input) {
             data[input.attributes['name'].value] = input.value
-          });
-          self.collection.insert({
+          })
+
+          self.fire('save', {
             name: data.name,
             wifiQuality: data.wifi,
             powerAvailable: data.power,
             comments: [data.comment],
             position: {latitude: data.latitude, longitude: data.longitude},
           })
-
-          self.fire('save', data)
-          self.fire('created', `${data.name} was successfully added.`)
-          return false
         }
       },
     })

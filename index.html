@@ -6,9 +6,7 @@
     <title>Make the World your Workplace - Webnomad</title>
     <meta name="description" content="Find a internet cafe hotspot where to work next to where you are. Contribute to the open map of the best internet work places.">
 
-    <script src="bower_components/ddp.js/src/ddp.js"></script>
-    <script src="bower_components/q/q.js"></script>
-    <script src="bower_components/asteroid/dist/asteroid.browser.js"></script>
+    <script src="https://npmcdn.com/kinto@1.2.0/dist/kinto-1.2.0.min.js"></script>
     <!-- <script src="js/routes.js"></script> -->
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
@@ -31,7 +29,12 @@
   </body>
 
   <script>
-    var serverURL = 'api.webnomad.org'
+    var serverURL = 'https://kinto.dev.mozaws.net/v1'
+    var db = new Kinto({
+      remote: serverURL,
+      headers: {Authorization: 'Basic ' + btoa('webnomad:webnomad')}
+    })
+    var Spots = db.collection('spots')
 
     window.addEventListener('WebComponentsReady', function(e) {
       var map = document.querySelector('app-map')
@@ -57,25 +60,48 @@
         updateUser({name: event.detail.author})
       })
 
-      // Load spots
-      var remote = new Asteroid(serverURL)
-      var Spots = remote.getCollection('spots')
-      var spots = Spots.reactiveQuery({})
-
       // Inject spots into map
-      map.spots = spots.result
-      spots.on('change', function() {
-        map.spots = spots.result
-      })
 
       // Editor listening
-      editor.collection = Spots
+      Spots.sync()
+      .then(function() {
+        return Spots.list()
+      })
+      .then(function(spots) {
+        map.spots = spots.data
+        editor.collection = spots.data
+      })
       editor.addEventListener('invalid', function(event) {
         alert.text = event.detail
         alert.className = 'error'
         alert.show()
       })
+
+      editor.addEventListener('save', function(event) {
+        console.debug('creating', event.detail)
+        Spots.create(event.detail)
+        .then(function(res) {
+          var author = event.detail.author || 'webnomad'
+          return Spots.sync({
+            remote: serverURL,
+            headers: {Authorization: 'Basic ' + btoa('webnomad' + ':' + 'webnomad')}
+          })
+        })
+        .then(function() {
+          alert.className = 'success'
+          alert.text = 'Your work spot was saved!'
+          alert.show()
+        })
+        .catch(function(err) {
+          console.error(err);
+          alert.className = 'error'
+          alert.text = 'Please check the form'
+          alert.show()
+        })
+      })
+
       editor.addEventListener('created', function(event) {
+        console.debug('created', event)
         alert.text = event.detail
         alert.className = 'success'
         alert.show()
